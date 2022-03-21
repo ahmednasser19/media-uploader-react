@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="box">
       <h2 className='header'>
-        media
+
         <DisplayImage />
       </h2>
     </div >
