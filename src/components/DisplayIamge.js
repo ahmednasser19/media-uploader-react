@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import '../App.css'
 const UploadAndDisplayImage = () => {
     const [selectedImage, setSelectedImage] = useState(null);
 
@@ -19,6 +19,17 @@ const UploadAndDisplayImage = () => {
 
             <br />
 
+            <div>
+                <input type="file" id="file" />
+                <div className="label-holder">
+                    <label htmlFor="file" className="label">
+                        <i className="material-icons">add_a_photo</i>
+                    </label>
+                </div>
+            </div>
+
+
+            {/* 
             <input
                 type="file"
                 name="myImage"
@@ -26,7 +37,7 @@ const UploadAndDisplayImage = () => {
                     console.log(event.target.files[0]);
                     setSelectedImage(event.target.files[0]);
                 }}
-            />
+            /> */}
         </div >
     );
 };
