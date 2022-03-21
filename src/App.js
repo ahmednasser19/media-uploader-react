@@ -1,12 +1,13 @@
 
-import './App.css';
+import './App.css'; import DisplayImage from './components/DisplayIamge';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
     <div className="box">
       <h2 className='header'>
         media
-
+        <DisplayImage />
       </h2>
     </div >
   );
