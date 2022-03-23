@@ -4,36 +4,42 @@ import '../App.css'
 const UploadAndDisplayImage = () => {
     const [selectedImages, setSelectedImages] = useState([]);
     const [selectedBoxes, setSelectedBoxes] = useState([])
-
+    const [checkedImgs, setCheckedImgs] = useState([])
+    const [imagesId, setImagesId] = useState([])
 
     const imageHandelChange = (e) => {
-        //console.log(e.target.files)
         if (e.target.files) {
             const fileArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file))
-
             setSelectedImages((prevImages) => prevImages.concat(fileArray))
             Array.from(e.target.files).map(
                 (file) => URL.revokeObjectURL(file)
             )
+            setCheckedImgs((prevImages) => prevImages.concat(fileArray))
+
         }
+
+
     }
 
-    const renderImages = (s) => {
+    //console.log(checkedImgs)
 
+
+    const renderImages = (s) => {
         return s.map((photo) => {
             return (
-
                 <div key={photo} className="images-border col-md-3">
                     <div className="custom-control custom-checkbox image-checkbox">
-                        <input type="checkbox" className="custom-control-input"
-                            onChange={selectedBox} value={photo}
-
+                        <input
+                            type="checkbox"
+                            className="custom-control-input"
+                            onChange={selectedBox}
+                            value={photo}
                             id={photo} />
+
                         <label className="custom-control-label" htmlFor={photo}>
-                            <img src={photo} key={photo} alt="#" className="img-fluid" />
+                            <img draggable={'true'} src={photo} key={photo} alt="#" className="img-fluid" />
                         </label>
                     </div>
-
                 </div>
             )
         })
@@ -69,6 +75,10 @@ const UploadAndDisplayImage = () => {
     const selectedBox = (e) => {
         const checked = e.target.checked;
 
+        const values = e.target.id
+
+        setImagesId([...imagesId, values])
+
         if (checked) {
             setSelectedBoxes([...selectedBoxes, checked]);
         }
@@ -78,13 +88,23 @@ const UploadAndDisplayImage = () => {
             const index = selectedBoxes.indexOf(e.target.value)
             selectedBoxes.splice(index, 1)
             setSelectedBoxes([...selectedBoxes]);
+
         }
+
+
 
     };
 
-    console.log(selectedBoxes)
+
+    const handleDeleteMedia = () => {
+        const intersection = checkedImgs.filter(element => imagesId.includes(element));
+        console.log(intersection)
+
+        const updatedImgs = selectedImages.filter((el) => !intersection.includes(el))
 
 
+        setSelectedImages(updatedImgs)
+    }
 
     return (
         (selectedImages.length) == 0 ?
@@ -94,15 +114,12 @@ const UploadAndDisplayImage = () => {
                 <div className="result">
                     {renderImages(selectedImages)}
                 </div>
-
                 <div className="container">
-
                     <div className="home"
                         onDragOver={dragOver}
                         onDragEnter={dragEnter}
                         onDragLeave={dragLeave}
                         onDrop={fileDrop}>
-
                         <div>
                             {/*arrow svg */}
                             <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" fill="currentColor" className="bi bi-arrow-up-circle-fill" viewBox="0 0 16 16">
@@ -110,15 +127,11 @@ const UploadAndDisplayImage = () => {
                             </svg>
                         </div>
                         <input type="file" id="file" multiple onChange={imageHandelChange} />
-
                         <div className="add-file-layout">
                             <label htmlFor="file" className="label">
-
                                 <p className="add-files">Add files</p>
-
                             </label>
                         </div>
-
                         <div className="drag-text">or drop files to upload</div>
                     </div>
                 </div>
@@ -129,8 +142,7 @@ const UploadAndDisplayImage = () => {
                 <div>
                     {selectedBoxes.length} --- {selectedImages.length} media selected
 
-
-                    {/* <button type="button" class="btn btn-light">Light</button> */}
+                    <button type="button" className="btn btn-outline-danger" onClick={handleDeleteMedia}>Delete media</button>
                 </div>
 
                 <div className="container">
