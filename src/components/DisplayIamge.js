@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import '../App.css'
-import HomePage from "./HomePage";
-import Checkbox from './Checkbox';
+
 const UploadAndDisplayImage = () => {
     const [selectedImages, setSelectedImages] = useState([]);
-    const [selectedBoxes, setSelectedBoxes] = useState(0)
-    const [checkedImages, setCheckedImaged] = useState([false])
+    const [selectedBoxes, setSelectedBoxes] = useState([])
+
 
     const imageHandelChange = (e) => {
         //console.log(e.target.files)
@@ -26,7 +25,10 @@ const UploadAndDisplayImage = () => {
 
                 <div key={photo} className="images-border col-md-3">
                     <div className="custom-control custom-checkbox image-checkbox">
-                        <input type="checkbox" className="custom-control-input" onChange={() => selectedBox()} id={photo} />
+                        <input type="checkbox" className="custom-control-input"
+                            onChange={selectedBox} value={photo}
+
+                            id={photo} />
                         <label className="custom-control-label" htmlFor={photo}>
                             <img src={photo} key={photo} alt="#" className="img-fluid" />
                         </label>
@@ -36,9 +38,6 @@ const UploadAndDisplayImage = () => {
             )
         })
     }
-
-
-
 
 
     ///drag and drop images 
@@ -67,45 +66,23 @@ const UploadAndDisplayImage = () => {
 
     }
 
+    const selectedBox = (e) => {
+        const checked = e.target.checked;
 
-    useEffect(() => {
+        if (checked) {
+            setSelectedBoxes([...selectedBoxes, checked]);
+        }
 
-        setCheckedImaged(Array(selectedImages.length).fill(false))
-        console.log(checkedImages)
-    }, [selectedImages]);
-    //count number of selected images 
-    const selectedBox = () => {
-        // setCheckedImaged(!checkedImages)
+        // // // Case 2  : The user unchecks the box
+        else {
+            const index = selectedBoxes.indexOf(e.target.value)
+            selectedBoxes.splice(index, 1)
+            setSelectedBoxes([...selectedBoxes]);
+        }
 
-        // console.log(checkedImages)
+    };
 
-        // checkedImages.map((e) => {
-        //     console.log(e)
-        // })
-        // if (checkedImages === true) {
-        //     setSelectedBoxes(selectedBoxes + 1)
-        // }
-        // else
-        //     setSelectedBoxes(selectedBoxes - 1)
-
-        // console.log(checkedImages)
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    console.log(selectedBoxes)
 
 
 
@@ -149,7 +126,12 @@ const UploadAndDisplayImage = () => {
             :
             <>
 
-                <p>{selectedBoxes} --- {selectedImages.length} media selected </p>
+                <div>
+                    {selectedBoxes.length} --- {selectedImages.length} media selected
+
+
+                    {/* <button type="button" class="btn btn-light">Light</button> */}
+                </div>
 
                 <div className="container">
 
@@ -177,8 +159,6 @@ const UploadAndDisplayImage = () => {
                 </div>
 
             </>
-
-
 
 
     );
