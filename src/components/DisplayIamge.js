@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import '../App.css'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
 const UploadAndDisplayImage = () => {
+
+
     const [selectedImages, setSelectedImages] = useState([]);
     const [selectedBoxes, setSelectedBoxes] = useState([])
     const [checkedImgs, setCheckedImgs] = useState([])
     const [imagesId, setImagesId] = useState([])
     const [imageCount, setImageCount] = useState(0)
-    const [imageArr, updateImagaArr] = useState()
+
+    //convert the uploaded images to array of images ready to rendered 
     const imageHandelChange = (e) => {
         if (e.target.files) {
             const fileArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file))
@@ -16,14 +20,10 @@ const UploadAndDisplayImage = () => {
                 (file) => URL.revokeObjectURL(file)
             )
             setCheckedImgs((prevImages) => prevImages.concat(fileArray))
-
         }
-
-
     }
 
-
-
+    //render the uploaded images 
     const renderImages = (s) => {
         return (
             s.map((photo, index) => {
@@ -31,7 +31,7 @@ const UploadAndDisplayImage = () => {
                     <Draggable key={photo} draggableId={photo} index={index}>
                         {(provided) => (
                             index === 0 ?
-                                <div className="images-border col-md-4" {...provided.draggableProps} ref={provided.innerRef} {...provided.dragHandleProps}>
+                                <div className="images-border col-sm-5"  {...provided.draggableProps} ref={provided.innerRef} {...provided.dragHandleProps}>
                                     <div className="custom-control custom-checkbox image-checkbox">
                                         <input
                                             type="checkbox"
@@ -45,9 +45,8 @@ const UploadAndDisplayImage = () => {
                                     </div>
                                 </div>
                                 :
-
-                                <div className="images-border-1 col-md-2" {...provided.draggableProps} ref={provided.innerRef} {...provided.dragHandleProps}>
-                                    <div className="custom-control custom-checkbox image-checkbox">
+                                <div className="images-border-1 col-sm-3 " {...provided.draggableProps} ref={provided.innerRef} {...provided.dragHandleProps}>
+                                    <div className=" custom-control custom-checkbox image-checkbox">
                                         <input
                                             type="checkbox"
                                             className="custom-control-input"
@@ -59,14 +58,11 @@ const UploadAndDisplayImage = () => {
                                         </label>
                                     </div>
                                 </div>
-
                         )}
-                    </Draggable>
+                    </Draggable >
                 )
-            }
-            )
+            })
         )
-
     }
     ///drag and drop images 
 
@@ -95,10 +91,12 @@ const UploadAndDisplayImage = () => {
     }
 
     const selectedBox = (e) => {
+
         const checked = e.target.checked;
 
         const values = e.target.id
         setImagesId([...imagesId, values])
+        // // // Case 1 : The user checks the box
         if (checked) {
             setSelectedBoxes([...selectedBoxes, checked]);
             setImageCount(imageCount + 1)
@@ -113,8 +111,6 @@ const UploadAndDisplayImage = () => {
         }
     };
 
-
-
     //delete button function 
     const handleDeleteMedia = () => {
         const intersection = checkedImgs.filter(element => imagesId.includes(element));
@@ -123,10 +119,8 @@ const UploadAndDisplayImage = () => {
         setImageCount(0)
     }
 
-
     ///handle the arrangment of images after draggin 
     const handleOnDragEnd = (result) => {
-
         if (!result.destination) return;
         const items = Array.from(selectedImages)
         const [reorderedImgs] = items.splice(result.source.index, 1)
@@ -136,7 +130,6 @@ const UploadAndDisplayImage = () => {
     }
     return (
         (selectedImages.length) == 0 ?
-
             <>
                 <p>Media </p>
                 <div className="container">
@@ -163,7 +156,6 @@ const UploadAndDisplayImage = () => {
             </>
             :
             <>
-
                 <div>
                     {selectedBoxes.length > 0 ?
                         <div className="media">
@@ -185,22 +177,22 @@ const UploadAndDisplayImage = () => {
                         <DragDropContext onDragEnd={handleOnDragEnd}>
                             <Droppable droppableId="photos">
                                 {(provided) => (
-                                    <div className="row" {...provided.DroppableProps} ref={provided.innerRef}>
-                                        {renderImages(selectedImages)}
-                                        {provided.placeholder}
+                                    <div className="container" {...provided.DroppableProps}
+                                        ref={provided.innerRef}>
+                                        <div className="row">
+                                            {renderImages(selectedImages)}
+                                            {provided.placeholder}
+                                        </div>
                                     </div>)}
                             </Droppable>
                         </DragDropContext>
                     </div>
-
                     <div className="home-1"
                         onDragOver={dragOver}
                         onDragEnter={dragEnter}
                         onDragLeave={dragLeave}
                         onDrop={fileDrop}>
-
                         <input type="file" id="file" multiple onChange={imageHandelChange} />
-
                         <div className="label-holder-1">
                             <label htmlFor="file" className="label-1">
                                 <p className="add">Add media</p>
@@ -211,10 +203,7 @@ const UploadAndDisplayImage = () => {
                         </div>
                     </div>
                 </div>
-
             </>
-
-
     );
 };
 

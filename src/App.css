@@ -120,8 +120,8 @@ img {
 }
 
 .images-border {
-  display: flex;
-  justify-content: center;
+  width: 200px;
+  height: 200px;
   margin: 5px;
   padding: 5px;
   border-radius: 5px;
@@ -131,12 +131,13 @@ img {
 
 .images-border-1 {
   height: fit-content;
-  display: flex;
-  justify-content: flex-end;
   margin: 5px;
   padding: 5px;
   border-radius: 5px;
   border: 1px solid rgba(137, 143, 149, 0.5);
+}
+.image-preview {
+  height: 200px;
 }
 .home-1 {
   width: 200px;
@@ -181,5 +182,10 @@ img {
 
 .media {
   display: flex;
+  justify-content: space-between;
+}
+
+.show-imgs {
+  display: inline-flex;
   justify-content: space-between;
 }
