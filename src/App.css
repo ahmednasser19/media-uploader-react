@@ -125,6 +125,17 @@ img {
   margin: 5px;
   padding: 5px;
   border-radius: 5px;
+  height: fit-content;
+  border: 1px solid rgba(137, 143, 149, 0.5);
+}
+
+.images-border-1 {
+  height: fit-content;
+  display: flex;
+  justify-content: flex-end;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
   border: 1px solid rgba(137, 143, 149, 0.5);
 }
 .home-1 {
@@ -163,4 +174,12 @@ img {
   place-items: center;
 
   cursor: pointer;
+}
+.button-delete {
+  margin: 0 150px 0 150px;
+}
+
+.media {
+  display: flex;
+  justify-content: space-between;
 }
