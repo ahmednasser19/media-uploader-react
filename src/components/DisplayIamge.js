@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import '../App.css'
-
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 const UploadAndDisplayImage = () => {
     const [selectedImages, setSelectedImages] = useState([]);
     const [selectedBoxes, setSelectedBoxes] = useState([])
     const [checkedImgs, setCheckedImgs] = useState([])
     const [imagesId, setImagesId] = useState([])
-
+    const [imageCount, setImageCount] = useState(0)
+    const [imageArr, updateImagaArr] = useState()
     const imageHandelChange = (e) => {
         if (e.target.files) {
             const fileArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file))
@@ -21,31 +22,52 @@ const UploadAndDisplayImage = () => {
 
     }
 
-    //console.log(checkedImgs)
 
 
     const renderImages = (s) => {
-        return s.map((photo) => {
-            return (
-                <div key={photo} className="images-border col-md-3">
-                    <div className="custom-control custom-checkbox image-checkbox">
-                        <input
-                            type="checkbox"
-                            className="custom-control-input"
-                            onChange={selectedBox}
-                            value={photo}
-                            id={photo} />
+        return (
+            s.map((photo, index) => {
+                return (
+                    <Draggable key={photo} draggableId={photo} index={index}>
+                        {(provided) => (
+                            index === 0 ?
+                                <div className="images-border col-md-4" {...provided.draggableProps} ref={provided.innerRef} {...provided.dragHandleProps}>
+                                    <div className="custom-control custom-checkbox image-checkbox">
+                                        <input
+                                            type="checkbox"
+                                            className="custom-control-input"
+                                            onChange={selectedBox}
+                                            value={photo}
+                                            id={photo} />
+                                        <label className="custom-control-label" htmlFor={photo}>
+                                            <img draggable={'true'} src={photo} key={photo} alt="#" className="img-fluid" />
+                                        </label>
+                                    </div>
+                                </div>
+                                :
 
-                        <label className="custom-control-label" htmlFor={photo}>
-                            <img draggable={'true'} src={photo} key={photo} alt="#" className="img-fluid" />
-                        </label>
-                    </div>
-                </div>
+                                <div className="images-border-1 col-md-2" {...provided.draggableProps} ref={provided.innerRef} {...provided.dragHandleProps}>
+                                    <div className="custom-control custom-checkbox image-checkbox">
+                                        <input
+                                            type="checkbox"
+                                            className="custom-control-input"
+                                            onChange={selectedBox}
+                                            value={photo}
+                                            id={photo} />
+                                        <label className="custom-control-label" htmlFor={photo}>
+                                            <img draggable={'true'} src={photo} key={photo} alt="#" className="img-fluid" />
+                                        </label>
+                                    </div>
+                                </div>
+
+                        )}
+                    </Draggable>
+                )
+            }
             )
-        })
+        )
+
     }
-
-
     ///drag and drop images 
 
     const dragOver = (e) => {
@@ -76,44 +98,47 @@ const UploadAndDisplayImage = () => {
         const checked = e.target.checked;
 
         const values = e.target.id
-
         setImagesId([...imagesId, values])
-
         if (checked) {
             setSelectedBoxes([...selectedBoxes, checked]);
-        }
+            setImageCount(imageCount + 1)
 
+        }
         // // // Case 2  : The user unchecks the box
         else {
             const index = selectedBoxes.indexOf(e.target.value)
             selectedBoxes.splice(index, 1)
             setSelectedBoxes([...selectedBoxes]);
-
+            setImageCount(imageCount - 1)
         }
-
-
-
     };
 
 
+
+    //delete button function 
     const handleDeleteMedia = () => {
         const intersection = checkedImgs.filter(element => imagesId.includes(element));
-        console.log(intersection)
-
         const updatedImgs = selectedImages.filter((el) => !intersection.includes(el))
-
-
         setSelectedImages(updatedImgs)
+        setImageCount(0)
     }
 
+
+    ///handle the arrangment of images after draggin 
+    const handleOnDragEnd = (result) => {
+
+        if (!result.destination) return;
+        const items = Array.from(selectedImages)
+        const [reorderedImgs] = items.splice(result.source.index, 1)
+        items.splice(result.destination.index, 0, reorderedImgs)
+
+        setSelectedImages(items)
+    }
     return (
         (selectedImages.length) == 0 ?
 
             <>
                 <p>Media </p>
-                <div className="result">
-                    {renderImages(selectedImages)}
-                </div>
                 <div className="container">
                     <div className="home"
                         onDragOver={dragOver}
@@ -140,15 +165,32 @@ const UploadAndDisplayImage = () => {
             <>
 
                 <div>
-                    {selectedBoxes.length} --- {selectedImages.length} media selected
-
-                    <button type="button" className="btn btn-outline-danger" onClick={handleDeleteMedia}>Delete media</button>
+                    {selectedBoxes.length > 0 ?
+                        <div className="media">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-dash-square" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
+                                </svg>
+                                {" "}   {imageCount} media selected
+                            </div>
+                            <div>
+                                <button type="button" className="button btn btn-outline-danger" onClick={handleDeleteMedia}>Delete media</button>
+                            </div>
+                        </div> :
+                        <p>Media </p>}
                 </div>
-
                 <div className="container">
-
                     <div className="result">
-                        {renderImages(selectedImages)}
+                        <DragDropContext onDragEnd={handleOnDragEnd}>
+                            <Droppable droppableId="photos">
+                                {(provided) => (
+                                    <div className="row" {...provided.DroppableProps} ref={provided.innerRef}>
+                                        {renderImages(selectedImages)}
+                                        {provided.placeholder}
+                                    </div>)}
+                            </Droppable>
+                        </DragDropContext>
                     </div>
 
                     <div className="home-1"

@@ -1,6 +1,7 @@
 
 import './App.css'; import DisplayImage from './components/DisplayIamge';
 import "bootstrap/dist/css/bootstrap.min.css";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 function App() {
   return (
